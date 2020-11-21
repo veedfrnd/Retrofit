@@ -24,6 +24,7 @@ public interface MyAPIInterface {
             .build();
 
     /*simple get request*/
+    //kkhjkhjk
     @GET("posts")
     Call<List<Post>> getPosts();
 
