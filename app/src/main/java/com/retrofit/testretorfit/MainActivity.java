@@ -27,8 +27,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void RunCode(View view) {
-        //getPosts();
-
+        getPosts();
     }
 
     private void getPosts() {
