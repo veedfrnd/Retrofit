@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.retrofit.testretorfit.models.Letter;
 import com.retrofit.testretorfit.models.Post;
 import com.retrofit.testretorfit.models.TotalVisits;
+import com.retrofit.testretorfit.models.UpdateVCode;
 import com.retrofit.testretorfit.restapi.MyAPIInterface;
 
 import java.util.HashMap;
@@ -34,7 +35,72 @@ public class MainActivity extends AppCompatActivity {
     public void RunCode(View view) {
         //getPosts();
         //getLetters();
-        getTotalVisits();
+        // getTotalVisits();
+        // createPost();
+        // updateVCode();
+        putPost();
+    }
+
+    private void putPost() {
+        Post putpost = new Post(5, null, "y puri post ke object ko hi update kr degi.");
+       // Call<Post> putCall = myAPIInterface.putPost(5, post);
+        Post patchpost = new Post(5, null, "partial update kregi.");
+
+        Call<Post> patchPostCall = myAPIInterface.patchPost(5, patchpost);
+        patchPostCall.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                if (response.isSuccessful()) {
+                    showPost(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void updateVCode() {
+        UpdateVCode vCode = new UpdateVCode("30", "12345");
+        Map<String, String> OMap = new HashMap<String, String>();
+        OMap.put("VCode", "30");
+        OMap.put("dbid", "12345");
+        Call<List<UpdateVCode>> callVcode = myAPIInterface.updateVCo(OMap);
+        callVcode.enqueue(new Callback<List<UpdateVCode>>() {
+            @Override
+            public void onResponse(Call<List<UpdateVCode>> call, Response<List<UpdateVCode>> response) {
+                mTag.setText("" + response.code());
+                if (response.isSuccessful()) {
+                    mTag.setText(response.body().get(0).getResp());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<UpdateVCode>> call, Throwable t) {
+                mTag.setText(t.getMessage());
+            }
+        });
+    }
+
+    private void createPost() {
+        Post post = new Post(5, "Post Title", "This is post body");
+        Call<Post> createCall = myAPIInterface.createPost(post);
+        createCall.enqueue(new Callback<Post>() {
+            @Override
+            public void onResponse(Call<Post> call, Response<Post> response) {
+                if (response.isSuccessful()) {
+                    mTag.setText(response.code() + "\n");
+                    showPost(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Post> call, Throwable t) {
+
+            }
+        });
     }
 
     private void getTotalVisits() {
@@ -97,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void getPosts() {
-        Call<List<Post>> call = myAPIInterface.getPosts();
+        Call<List<Post>> call = myAPIInterface.getPosts(5);
         call.enqueue(new Callback<List<Post>>() {
             @Override
             public void onResponse(Call<List<Post>> call, Response<List<Post>> response) {

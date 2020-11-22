@@ -10,6 +10,12 @@ public class Post {
     @SerializedName("body")
     private String testBody;
 
+    public Post(int userId, String title, String testBody) {
+        this.userId = userId;
+        this.title = title;
+        this.testBody = testBody;
+    }
+
     public int getUserId() {
         return userId;
     }
