@@ -12,6 +12,7 @@ import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -21,10 +22,9 @@ import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.QueryMap;
 
+import static com.retrofit.testretorfit.restapi.MyRetrofirClient.BASE_URL;
+
 public interface MyAPIInterface {
-      String BASE_URL = "https://jsonplaceholder.typicode.com/";   // JsonPlaceHolder API
-    //String BASE_URL = "http://www.unfpamp.in/UmangHelpline.asmx/";   // @GET("GetLetter")  simple SOAP Service
-   // String BASE_URL = "http://192.169.226.66/att.asmx/";  //@GET("GetTotalVisite"),@POST("UpdateVcode")  simple SOAP Service
 
     Retrofit retrofit = new Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -73,5 +73,8 @@ public interface MyAPIInterface {
     @PATCH("posts/{id}")
     Call<Post> patchPost(@Path("id") int id,@Body Post post);
     //endregion
+
+    @DELETE("posts/(id)")
+    Call<Void> deletePost(@Path("id") int id);
 
 }

@@ -11,6 +11,7 @@ import com.retrofit.testretorfit.models.Post;
 import com.retrofit.testretorfit.models.TotalVisits;
 import com.retrofit.testretorfit.models.UpdateVCode;
 import com.retrofit.testretorfit.restapi.MyAPIInterface;
+import com.retrofit.testretorfit.restapi.MyRetrofirClient;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,7 +30,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTag = findViewById(R.id.mTag);
-        myAPIInterface = MyAPIInterface.retrofit.create(MyAPIInterface.class);
+        //myAPIInterface = MyAPIInterface.retrofit.create(MyAPIInterface.class);
+        myAPIInterface = MyRetrofirClient.getRetrofit().create(MyAPIInterface.class);
     }
 
     public void RunCode(View view) {
@@ -38,12 +40,30 @@ public class MainActivity extends AppCompatActivity {
         // getTotalVisits();
         // createPost();
         // updateVCode();
-        putPost();
+        //putPost();
+        deletePost();
+    }
+
+    private void deletePost() {
+        Call<Void> deletePostCall = myAPIInterface.deletePost(5);
+        deletePostCall.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    /*todo post deleted*/
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+
+            }
+        });
     }
 
     private void putPost() {
         Post putpost = new Post(5, null, "y puri post ke object ko hi update kr degi.");
-       // Call<Post> putCall = myAPIInterface.putPost(5, post);
+        // Call<Post> putCall = myAPIInterface.putPost(5, post);
         Post patchpost = new Post(5, null, "partial update kregi.");
 
         Call<Post> patchPostCall = myAPIInterface.patchPost(5, patchpost);
