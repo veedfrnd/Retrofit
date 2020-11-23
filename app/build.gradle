@@ -40,4 +40,9 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
+
+    //<string tag ke andar data aata us ke liye>
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+    //<xml me data aa rha hai to>
+    implementation 'com.squareup.retrofit2:converter-simplexml:2.9.0'
 }

@@ -1,5 +1,6 @@
 package com.retrofit.testretorfit.restapi;
 
+import com.retrofit.testretorfit.models.Channel;
 import com.retrofit.testretorfit.models.Letter;
 import com.retrofit.testretorfit.models.Post;
 import com.retrofit.testretorfit.models.TotalVisits;
@@ -66,15 +67,25 @@ public interface MyAPIInterface {
 
     //region PUT method todo : y method particular id ke behalf me sari fields ko update kr degi(us particular resource ko pura hi overridde,  kr degi, agr resource nhi milega to create kr degi
     @PUT("posts/{id}")
-    Call<Post> putPost(@Path("id") int id,@Body Post post);
+    Call<Post> putPost(@Path("id") int id, @Body Post post);
     //endregion
 
     //region todo : y method particular id ke behalf me sirf unhi  fields ko update kr degi jin fields ko beja ja rha hai(partial update.)
     @PATCH("posts/{id}")
-    Call<Post> patchPost(@Path("id") int id,@Body Post post);
+    Call<Post> patchPost(@Path("id") int id, @Body Post post);
     //endregion
 
     @DELETE("posts/(id)")
     Call<Void> deletePost(@Path("id") int id);
+
+    //region todo : <string tag me agr data aa rha hai to>
+    @POST("Samarthan.asmx/Master_Comic")
+    Call<String> GetComic();
+    //endregion
+
+    /*//region todo : <Agar data xml rormate me data aa rha hai to>
+    @POST("rssfeedstopstories.cms")
+    Call<Channel> GetXML();
+    //endregion*/
 
 }

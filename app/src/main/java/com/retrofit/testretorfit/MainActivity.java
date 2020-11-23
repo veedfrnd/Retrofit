@@ -6,13 +6,23 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.retrofit.testretorfit.models.Channel;
+import com.retrofit.testretorfit.models.Comic;
 import com.retrofit.testretorfit.models.Letter;
 import com.retrofit.testretorfit.models.Post;
 import com.retrofit.testretorfit.models.TotalVisits;
 import com.retrofit.testretorfit.models.UpdateVCode;
+import com.retrofit.testretorfit.restapi.MXmlPullParser;
 import com.retrofit.testretorfit.restapi.MyAPIInterface;
 import com.retrofit.testretorfit.restapi.MyRetrofirClient;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +41,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mTag = findViewById(R.id.mTag);
         //myAPIInterface = MyAPIInterface.retrofit.create(MyAPIInterface.class);
-        myAPIInterface = MyRetrofirClient.getRetrofit().create(MyAPIInterface.class);
+
+        myAPIInterface = MyRetrofirClient.getRetrofit().create(MyAPIInterface.class); /*todo : logging interceptor and null serialization*/
+        myAPIInterface = MyRetrofirClient.retrofitStringTag.create(MyAPIInterface.class); /*todo : string tag me agr data receive ho rha hai to*/
+        // myAPIInterface = MyRetrofirClient.retrofitXMLParce.create(MyAPIInterface.class); /*todo : issue with this*/
     }
 
     public void RunCode(View view) {
@@ -41,7 +54,68 @@ public class MainActivity extends AppCompatActivity {
         // createPost();
         // updateVCode();
         //putPost();
-        deletePost();
+        //deletePost();
+        dataInStringTag();
+        /*readFromXML();*/
+    }
+
+    /*private void readFromXML() {
+        Call<Channel> xmlCall = myAPIInterface.GetXML();
+        xmlCall.enqueue(new Callback<Channel>() {
+            @Override
+            public void onResponse(Call<Channel> call, Response<Channel> response) {
+                mTag.setText(response.code() + "\n");
+                if (response.isSuccessful()) {
+                    mTag.append("Title : " + response.body().getTitle() + "\n");
+                    mTag.append("Link : " + response.body().getLink() + "\n");
+                    mTag.append("Description : " + response.body().getDescription() + "\n");
+                    mTag.append("Copyright : " + response.body().getCopyright() + "\n");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Channel> call, Throwable t) {
+                mTag.setText(t.getMessage());
+            }
+        });
+    }*/
+    private void dataInStringTag() {
+        Call<String> stringCall = myAPIInterface.GetComic();
+        stringCall.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                mTag.setText(response.code() + "\n");
+                if (response != null) {
+                    if (!response.body().isEmpty()) {
+                        String strResponse = new MXmlPullParser(response.body()).get();
+                        try {
+                            JSONObject jsonObject = new JSONObject(strResponse);
+                            JSONArray jsonArray = jsonObject.getJSONArray("ResponseCls");
+                            if (!jsonArray.isNull(0)) {
+                                List<Comic> comicList;
+                                Type listType = new TypeToken<List<Comic>>() {
+                                }.getType();
+                                comicList = new Gson().fromJson(jsonArray.toString(), listType);
+                                for (Comic comic : comicList) {
+                                    showStringTagData(comic);
+                                }
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+            }
+        });
+    }
+
+    private void showStringTagData(Comic comic) {
+        mTag.append("ComicTrNo : " + comic.getComicTrNo() + "\n");
+        mTag.append("ComicTrNo : " + comic.getComicName() + "\n\n");
     }
 
     private void deletePost() {
